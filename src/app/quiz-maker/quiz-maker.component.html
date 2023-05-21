@@ -1,0 +1,53 @@
+<div class="row">
+  <div class="col-sm-11" [formGroup]="form">
+    <ng-container *ngIf="controlType === 'dropdown'; else autocompleteControls">
+      <select formControlName="category">
+        <option [value]="null">Select category</option>
+        <option *ngFor="let category of categories$ | async; trackBy: PerformanceUtils.trackById"
+                [value]="category.id">
+          {{category.name}}
+        </option>
+      </select>
+
+
+      <select *ngIf="selectedCategory?.subcategories?.length" formControlName="subcategory">
+        <option [value]="null">Select Subcategory</option>
+        <option *ngFor="let subcategory of selectedCategory?.subcategories;trackBy: PerformanceUtils.trackById"
+                [value]="subcategory.id">
+          {{subcategory.name}}
+        </option>
+      </select>
+    </ng-container>
+
+    <ng-template #autocompleteControls>
+      <ng-container *ngIf="categories$ | async as categories">
+        <app-dropdown placeholder="Select category"
+                      formControlName="category"
+                      [options]="categories">
+        </app-dropdown>
+      </ng-container>
+
+      <app-dropdown *ngIf="selectedCategory?.subcategories?.length"
+                    placeholder="Select subcategory"
+                    formControlName="subcategory"
+                    [options]="selectedCategory?.subcategories">
+      </app-dropdown>
+    </ng-template>
+
+    <select formControlName="difficulty">
+      <option [value]="null">Select difficulty</option>
+      <option>Easy</option>
+      <option>Medium</option>
+      <option>Hard</option>
+    </select>
+    <button class="primary" id="createBtn" (click)="createQuiz()">Create</button>
+  </div>
+
+  <button *ngIf="controlType === 'dropdown'" (click)="controlType = 'autocomplete'" class="small">Use Autocompletes</button>
+  <button *ngIf="controlType === 'autocomplete'" (click)="controlType = 'dropdown'" class="small">Use Dropdowns</button>
+</div>
+<div class="row">
+  <app-quiz *ngIf="questions?.length"
+            [questions]="questions"
+            (changeQuestion)="replaceQuestion($event)"></app-quiz>
+</div>

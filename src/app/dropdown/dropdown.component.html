@@ -1,0 +1,14 @@
+<div *ngIf="showResults" class="dropdown__overlay" (click)="showResults = false"></div>
+
+<div class="dropdown">
+  <input [formControl]="searchControl"
+         (focus)="showResults = true"
+         type="text" [placeholder]="placeholder"/>
+  <div *ngIf="showResults" class="dropdown__options">
+    <div *ngFor="let item of (searchControl.value | search: options); trackBy: PerformanceUtils.trackById"
+         class="dropdown__option"
+         (click)="select(item)">
+      <span [innerHTML]="item[optionLabel] | highlight: searchControl.value"></span>
+    </div>
+  </div>
+</div>
